@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LeaveRequest } from '@/lib/types';
@@ -68,8 +67,10 @@ const LeaveRequestList = ({
         return 'Maternity Leave';
       case 'PATERNITY':
         return 'Paternity Leave';
-      default:
+      case 'OTHER':
         return 'Other';
+      default:
+        return 'Unknown Leave Type';
     }
   };
   

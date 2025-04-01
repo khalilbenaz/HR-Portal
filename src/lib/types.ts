@@ -1,3 +1,4 @@
+
 export interface User {
   id: string;
   username: string;
@@ -50,7 +51,7 @@ export interface LeaveRequest {
   employee: Employee;
   startDate: string;
   endDate: string;
-  type: 'SICK' | 'ANNUAL' | 'OTHER';
+  type: 'SICK' | 'ANNUAL' | 'MATERNITY' | 'PATERNITY' | 'OTHER';
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   reason: string;
   createdAt: string;
@@ -64,12 +65,13 @@ export interface DepartmentStats {
 
 export interface Activity {
   id: string;
-  type: 'EMPLOYEE_ADDED' | 'EMPLOYEE_UPDATED' | 'LEAVE_REQUESTED' | 'LEAVE_APPROVED' | 'PAYSLIP_GENERATED';
+  type: 'EMPLOYEE_ADDED' | 'EMPLOYEE_UPDATED' | 'LEAVE_REQUESTED' | 'LEAVE_APPROVED' | 'LEAVE_REJECTED' | 'PAYSLIP_GENERATED';
   message: string;
   date: string;
   user: {
     id: string;
     name: string;
+    avatar?: string;
   };
 }
 

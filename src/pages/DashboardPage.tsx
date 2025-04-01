@@ -66,6 +66,13 @@ const DashboardPage = () => {
           message: 'Payslips for May 2023 have been generated and are ready for review',
           date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
           user: { id: '1', name: 'HR Manager' }
+        },
+        {
+          id: '6',
+          type: 'LEAVE_REJECTED',
+          message: 'Leave request from Alex Johnson was rejected due to staffing constraints',
+          date: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
+          user: { id: '4', name: 'Department Manager' }
         }
       ]);
       

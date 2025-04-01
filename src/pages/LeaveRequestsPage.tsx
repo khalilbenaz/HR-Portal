@@ -85,6 +85,54 @@ const LeaveRequestsPage = () => {
           reason: 'Summer vacation',
           createdAt: '2023-05-25T14:10:00Z',
           updatedAt: '2023-05-26T11:05:00Z'
+        },
+        {
+          id: '4',
+          employeeId: '4',
+          employee: {
+            id: '4',
+            userId: 'u4',
+            firstName: 'Sarah',
+            lastName: 'Johnson',
+            email: 'sarah.johnson@example.com',
+            phone: '(555) 234-5678',
+            position: 'HR Specialist',
+            department: { id: 'd4', name: 'HR', managerId: 'm4', employeeCount: 12 },
+            manager: null,
+            hireDate: '2021-09-15',
+            status: 'ACTIVE'
+          },
+          startDate: '2023-08-01',
+          endDate: '2023-11-01',
+          type: 'MATERNITY',
+          status: 'APPROVED',
+          reason: 'Maternity leave',
+          createdAt: '2023-06-15T10:30:00Z',
+          updatedAt: '2023-06-16T14:20:00Z'
+        },
+        {
+          id: '5',
+          employeeId: '5',
+          employee: {
+            id: '5',
+            userId: 'u5',
+            firstName: 'Robert',
+            lastName: 'Davis',
+            email: 'robert.davis@example.com',
+            phone: '(555) 345-6789',
+            position: 'Financial Analyst',
+            department: { id: 'd5', name: 'Finance', managerId: 'm5', employeeCount: 15 },
+            manager: null,
+            hireDate: '2022-03-22',
+            status: 'ACTIVE'
+          },
+          startDate: '2023-07-15',
+          endDate: '2023-07-29',
+          type: 'PATERNITY',
+          status: 'PENDING',
+          reason: 'Paternity leave',
+          createdAt: '2023-06-20T11:45:00Z',
+          updatedAt: '2023-06-20T11:45:00Z'
         }
       ];
       
