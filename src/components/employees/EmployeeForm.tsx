@@ -9,14 +9,16 @@ import { Employee, Department } from '@/lib/types';
 
 interface EmployeeFormProps {
   employee?: Employee;
+  initialData?: Employee;
   departments: Department[];
   onSubmit: (formData: Partial<Employee>) => void;
   isLoading: boolean;
+  submitLabel?: string;
 }
 
-const EmployeeForm = ({ employee, departments, onSubmit, isLoading }: EmployeeFormProps) => {
+const EmployeeForm = ({ employee, initialData, departments, onSubmit, isLoading, submitLabel }: EmployeeFormProps) => {
   const [formData, setFormData] = useState<Partial<Employee>>(
-    employee || {
+    employee || initialData || {
       firstName: '',
       lastName: '',
       email: '',
@@ -54,10 +56,10 @@ const EmployeeForm = ({ employee, departments, onSubmit, isLoading }: EmployeeFo
     <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
-          <CardTitle>{employee ? 'Edit Employee' : 'Add New Employee'}</CardTitle>
+          <CardTitle>{employee || initialData ? 'Edit Employee' : 'Add New Employee'}</CardTitle>
           <CardDescription>
-            {employee 
-              ? `Update information for ${employee.firstName} ${employee.lastName}` 
+            {employee || initialData 
+              ? `Update information for ${formData.firstName} ${formData.lastName}` 
               : 'Enter the details for the new employee'}
           </CardDescription>
         </CardHeader>
@@ -173,7 +175,7 @@ const EmployeeForm = ({ employee, departments, onSubmit, isLoading }: EmployeeFo
             Cancel
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Saving...' : employee ? 'Update Employee' : 'Add Employee'}
+            {isLoading ? 'Saving...' : submitLabel || (employee || initialData ? 'Update Employee' : 'Add Employee')}
           </Button>
         </CardFooter>
       </Card>

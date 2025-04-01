@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   username: string;
@@ -75,20 +74,31 @@ export interface Activity {
   };
 }
 
-// Payroll types
+export interface PayslipEarning {
+  description: string;
+  amount: number;
+}
+
+export interface PayslipDeduction {
+  description: string;
+  amount: number;
+}
+
 export interface Payslip {
   id: string;
   employeeId: string;
   employeeName?: string;
+  department?: string;
   period: string;
   issueDate: string;
   grossAmount: number;
   netAmount: number;
   currency: string;
   status: 'DRAFT' | 'ISSUED' | 'PAID';
+  earnings?: PayslipEarning[];
+  deductions?: PayslipDeduction[];
 }
 
-// Performance types
 export interface Review {
   id: string;
   employeeId: string;

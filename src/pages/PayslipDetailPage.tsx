@@ -18,12 +18,7 @@ const PayslipDetailPage = () => {
     // Simulate API call to fetch payslip data
     setTimeout(() => {
       // Mock payslip data - in a real app this would come from an API
-      const mockPayslip: Payslip & { 
-        employeeName: string; 
-        department: string;
-        earnings: Array<{description: string; amount: number}>;
-        deductions: Array<{description: string; amount: number}>;
-      } = {
+      const mockPayslip: Payslip = {
         id: id || '1',
         employeeId: '1',
         employeeName: 'John Doe',
@@ -180,7 +175,7 @@ const PayslipDetailPage = () => {
             <div>
               <h3 className="font-medium mb-3">Earnings</h3>
               <div className="space-y-2">
-                {payslip.earnings.map((item, index) => (
+                {payslip.earnings?.map((item, index) => (
                   <div key={index} className="flex justify-between">
                     <span className="text-muted-foreground">{item.description}</span>
                     <span>
@@ -206,7 +201,7 @@ const PayslipDetailPage = () => {
             <div>
               <h3 className="font-medium mb-3">Deductions</h3>
               <div className="space-y-2">
-                {payslip.deductions.map((item, index) => (
+                {payslip.deductions?.map((item, index) => (
                   <div key={index} className="flex justify-between">
                     <span className="text-muted-foreground">{item.description}</span>
                     <span>

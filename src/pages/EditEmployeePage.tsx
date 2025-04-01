@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import EmployeeForm from '@/components/employees/EmployeeForm';
-import { Employee } from '@/lib/types';
+import { Employee, Department } from '@/lib/types';
 
 const EditEmployeePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +11,14 @@ const EditEmployeePage = () => {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  // Mock departments data
+  const mockDepartments: Department[] = [
+    { id: 'd1', name: 'Engineering', managerId: 'm1', employeeCount: 42 },
+    { id: 'd2', name: 'Marketing', managerId: 'm2', employeeCount: 18 },
+    { id: 'd3', name: 'Sales', managerId: 'm3', employeeCount: 27 },
+    { id: 'd4', name: 'HR', managerId: 'm4', employeeCount: 12 }
+  ];
   
   useEffect(() => {
     // Simulate API call to fetch employee data
@@ -83,6 +91,7 @@ const EditEmployeePage = () => {
       
       <EmployeeForm 
         initialData={employee}
+        departments={mockDepartments}
         onSubmit={handleSubmit}
         isLoading={saving}
         submitLabel="Update Employee"
