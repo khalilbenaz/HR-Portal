@@ -24,8 +24,7 @@ builder.Services.AddCors(options =>
 });
 
 // Configure PostgreSQL
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
-                      "Host=localhost;Database=hr_portal;Username=postgres;Password=postgres";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -58,9 +57,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
