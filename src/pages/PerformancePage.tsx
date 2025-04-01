@@ -1,9 +1,11 @@
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Award, CheckCircle, Target } from 'lucide-react';
+import { Award, CheckCircle, Target, Plus } from 'lucide-react';
 import PerformanceReviews from '@/components/performance/PerformanceReviews';
 import PerformanceGoals from '@/components/performance/PerformanceGoals';
 import { Review, Goal } from '@/lib/types';
@@ -111,9 +113,18 @@ const PerformancePage = () => {
   
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Performance</h1>
-        <p className="text-muted-foreground">Track your performance goals and reviews</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Performance</h1>
+          <p className="text-muted-foreground">Track your performance goals and reviews</p>
+        </div>
+        
+        <Link to="/performance/goals/add">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Add New Goal
+          </Button>
+        </Link>
       </div>
       
       <Tabs defaultValue="reviews" className="w-full">

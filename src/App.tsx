@@ -14,9 +14,15 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeDetailPage from "./pages/EmployeeDetailPage";
+import AddEmployeePage from "./pages/AddEmployeePage";
+import EditEmployeePage from "./pages/EditEmployeePage";
 import LeaveRequestsPage from "./pages/LeaveRequestsPage";
+import LeaveRequestDetailPage from "./pages/LeaveRequestDetailPage";
+import AddLeaveRequestPage from "./pages/AddLeaveRequestPage";
 import PayrollPage from "./pages/PayrollPage";
+import PayslipDetailPage from "./pages/PayslipDetailPage";
 import PerformancePage from "./pages/PerformancePage";
+import AddGoalPage from "./pages/AddGoalPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
@@ -50,11 +56,21 @@ const AppRoutes = () => {
             </ProtectedRoute>
           } 
         />
+        
+        {/* Employee Routes */}
         <Route 
           path="/employees" 
           element={
             <ProtectedRoute>
               <EmployeesPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/employees/add" 
+          element={
+            <ProtectedRoute>
+              <AddEmployeePage />
             </ProtectedRoute>
           } 
         />
@@ -67,6 +83,16 @@ const AppRoutes = () => {
           } 
         />
         <Route 
+          path="/employees/:id/edit" 
+          element={
+            <ProtectedRoute>
+              <EditEmployeePage />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Leave Request Routes */}
+        <Route 
           path="/leaves" 
           element={
             <ProtectedRoute>
@@ -74,6 +100,24 @@ const AppRoutes = () => {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/leaves/add" 
+          element={
+            <ProtectedRoute>
+              <AddLeaveRequestPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/leaves/:id" 
+          element={
+            <ProtectedRoute>
+              <LeaveRequestDetailPage />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Payroll Routes */}
         <Route 
           path="/payroll" 
           element={
@@ -83,6 +127,16 @@ const AppRoutes = () => {
           } 
         />
         <Route 
+          path="/payroll/:id" 
+          element={
+            <ProtectedRoute>
+              <PayslipDetailPage />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Performance Routes */}
+        <Route 
           path="/performance" 
           element={
             <ProtectedRoute>
@@ -90,6 +144,15 @@ const AppRoutes = () => {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/performance/goals/add" 
+          element={
+            <ProtectedRoute>
+              <AddGoalPage />
+            </ProtectedRoute>
+          } 
+        />
+        
         <Route 
           path="/settings" 
           element={
