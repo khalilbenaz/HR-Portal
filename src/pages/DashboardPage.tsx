@@ -14,15 +14,25 @@ import LeaveRequestsChart from '@/components/dashboard/LeaveRequestsChart';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import { DepartmentStats, Activity } from '@/lib/types';
 
+import { useQuery } from '@apollo/client';
+import { GET_DEPARTMENT_STATS, DepartmentStatsResponse } from '@/lib/graphql/departments';
+import { GET_RECENT_ACTIVITIES, ActivitiesResponse } from '@/lib/graphql/activities';
+
 const DashboardPage = () => {
-  // Sample data - would come from GraphQL API in a real app
   const [departmentData, setDepartmentData] = useState<DepartmentStats[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
+  // Requête pour obtenir les statistiques des départements
+  const { loading: deptLoading } = useQuery<DepartmentStatsResponse>(GET_DEPARTMENT_STATS, {
+    onCompleted: (data) => {
+      if (data?.departmentStats) {
+        setDepartmentData(data.departmentStats);
+      }
+    },
+    onError: (error) => {
+      console.error('Erreur lors de la récupération des statistiques des départements:', error);
+      // Fallback sur des données mockées en cas d'erreur
       setDepartmentData([
         { name: 'Engineering', employeeCount: 42 },
         { name: 'Marketing', employeeCount: 18 },
@@ -30,7 +40,20 @@ const DashboardPage = () => {
         { name: 'HR', employeeCount: 12 },
         { name: 'Finance', employeeCount: 15 }
       ]);
-      
+    }
+  });
+
+  // Requête pour obtenir les activités récentes
+  const { loading: activitiesLoading } = useQuery<ActivitiesResponse>(GET_RECENT_ACTIVITIES, {
+    variables: { limit: 6 },
+    onCompleted: (data) => {
+      if (data?.recentActivities) {
+        setActivities(data.recentActivities as Activity[]);
+      }
+    },
+    onError: (error) => {
+      console.error('Erreur lors de la récupération des activités récentes:', error);
+      // Fallback sur des données mockées en cas d'erreur
       setActivities([
         {
           id: '1',
@@ -75,10 +98,13 @@ const DashboardPage = () => {
           user: { id: '4', name: 'Department Manager' }
         }
       ]);
-      
-      setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  });
+
+  // Mettre à jour l'état de chargement global
+  useEffect(() => {
+    setLoading(deptLoading || activitiesLoading);
+  }, [deptLoading, activitiesLoading]);
   
   return (
     <div className="space-y-6">

@@ -1,70 +1,20 @@
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, AuthState, AuthContextType } from '@/lib/types';
 import { toast } from '@/components/ui/use-toast';
+import { useMutation, useQuery } from '@apollo/client';
+import { LOGIN_MUTATION, CURRENT_USER_QUERY, LoginResponse, CurrentUserResponse } from '@/lib/graphql/auth';
 
-// Mock authentication service - to be replaced with actual GraphQL calls
-const mockLogin = async (email: string, password: string): Promise<{ user: User; token: string }> => {
-  // In a real app, this would be an API call
-  if (email === 'admin@example.com' && password === 'password') {
-    return {
-      user: {
-        id: '1',
-        username: 'admin',
-        email: 'admin@example.com',
-        role: 'ADMIN',
-        firstName: 'Admin',
-        lastName: 'User'
-      },
-      token: 'mock-jwt-token'
-    };
-  }
-  
-  if (email === 'hr@example.com' && password === 'password') {
-    return {
-      user: {
-        id: '2',
-        username: 'hr',
-        email: 'hr@example.com',
-        role: 'HR',
-        firstName: 'HR',
-        lastName: 'Manager'
-      },
-      token: 'mock-jwt-token'
-    };
-  }
-  
-  if (email === 'manager@example.com' && password === 'password') {
-    return {
-      user: {
-        id: '3',
-        username: 'manager',
-        email: 'manager@example.com',
-        role: 'MANAGER',
-        firstName: 'Department',
-        lastName: 'Manager'
-      },
-      token: 'mock-jwt-token'
-    };
-  }
-  
-  if (email === 'employee@example.com' && password === 'password') {
-    return {
-      user: {
-        id: '4',
-        username: 'employee',
-        email: 'employee@example.com',
-        role: 'EMPLOYEE',
-        firstName: 'Regular',
-        lastName: 'Employee'
-      },
-      token: 'mock-jwt-token'
-    };
-  }
-  
-  throw new Error('Invalid credentials');
-};
+// Commentaire pour le développement - à supprimer en production
+// Ces données mockées sont conservées en commentaire pour référence
+/*
+Données de test :
+- admin@example.com / password (ADMIN)
+- hr@example.com / password (HR)
+- manager@example.com / password (MANAGER)
+- employee@example.com / password (EMPLOYEE)
+*/
 
 const initialState: AuthState = {
   user: null,
@@ -79,43 +29,100 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState>(initialState);
   const navigate = useNavigate();
+  
+  // Mutation pour se connecter
+  const [loginMutation, { loading: loginLoading }] = useMutation<LoginResponse>(LOGIN_MUTATION, {
+    onError: (error) => {
+      setAuth(prev => ({
+        ...prev,
+        loading: false,
+        error: error.message || 'Une erreur est survenue lors de la connexion'
+      }));
+      
+      toast({
+        variant: "destructive",
+        title: "Échec de connexion",
+        description: error.message || 'Une erreur est survenue lors de la connexion',
+      });
+    }
+  });
+  
+  // Requête pour obtenir l'utilisateur actuel
+  const { refetch: refetchCurrentUser } = useQuery<CurrentUserResponse>(CURRENT_USER_QUERY, {
+    skip: !auth.token, // Ne pas exécuter la requête si aucun token n'est disponible
+    onCompleted: (data) => {
+      if (data?.me) {
+        setAuth(prev => ({
+          ...prev,
+          user: data.me as User,
+          isAuthenticated: true,
+          loading: false
+        }));
+      }
+    },
+    onError: () => {
+      // En cas d'erreur, on considère que l'utilisateur n'est pas authentifié
+      logout();
+    }
+  });
+  
+  // Vérifier l'authentification au chargement de l'application
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    
+    if (token && storedUser) {
+      try {
+        const user = JSON.parse(storedUser) as User;
+        setAuth({
+          user,
+          token,
+          isAuthenticated: true,
+          loading: false,
+          error: null
+        });
+        
+        // Vérifier la validité du token en récupérant l'utilisateur actuel
+        refetchCurrentUser();
+      } catch (error) {
+        // Si le parsing échoue, on déconnecte l'utilisateur
+        logout();
+      }
+    }
+  }, []);
 
   const login = async (email: string, password: string) => {
     setAuth(prev => ({ ...prev, loading: true, error: null }));
     
     try {
-      const { user, token } = await mockLogin(email, password);
-      
-      // Save token to localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      setAuth({
-        user,
-        token,
-        isAuthenticated: true,
-        loading: false,
-        error: null
+      const response = await loginMutation({
+        variables: { email, password }
       });
       
-      toast({
-        title: "Login successful",
-        description: `Welcome back, ${user.firstName}!`,
-      });
-      
-      navigate('/dashboard');
+      if (response.data?.login) {
+        const { token, user } = response.data.login;
+        
+        // Sauvegarder le token et l'utilisateur dans le localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        setAuth({
+          user: user as User,
+          token,
+          isAuthenticated: true,
+          loading: false,
+          error: null
+        });
+        
+        toast({
+          title: "Connexion réussie",
+          description: `Bienvenue, ${user.firstName}!`,
+        });
+        
+        navigate('/dashboard');
+      }
     } catch (error) {
-      setAuth(prev => ({ 
-        ...prev, 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'An unknown error occurred' 
-      }));
-      
-      toast({
-        variant: "destructive",
-        title: "Login failed",
-        description: error instanceof Error ? error.message : 'An unknown error occurred',
-      });
+      // L'erreur est déjà gérée par onError du useMutation
     }
   };
 
@@ -132,8 +139,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     
     toast({
-      title: "Logged out",
-      description: "You have been successfully logged out",
+      title: "Déconnexion",
+      description: "Vous avez été déconnecté avec succès",
     });
     
     navigate('/login');

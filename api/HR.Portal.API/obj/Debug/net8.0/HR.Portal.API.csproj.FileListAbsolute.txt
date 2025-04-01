@@ -1,0 +1,8 @@
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.csproj.AssemblyReference.cache
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.AssemblyInfoInputs.cache
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.AssemblyInfo.cs
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.csproj.CoreCompileInputs.cache
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.MvcApplicationPartsAssemblyInfo.cs
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.MvcApplicationPartsAssemblyInfo.cache
+/Users/lilou/Projects/HR-Portal/api/HR.Portal.API/obj/Debug/net8.0/HR.Portal.API.sourcelink.json

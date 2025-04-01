@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Service de base de données PostgreSQL
+  postgres:
+    image: postgres:16
+    container_name: hr-portal-postgres
+    environment:
+      POSTGRES_DB: hr_portal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./api/HR.Portal.API/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service API backend
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.api
+    container_name: hr-portal-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=hr_portal;Username=postgres;Password=postgres
+    ports:
+      - "5001:80"
+
+  # Service frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: hr-portal-frontend
+    depends_on:
+      - api
+    environment:
+      - VITE_GRAPHQL_API_URL=http://localhost:5000/graphql
+    ports:
+      - "3000:80"
+
+volumes:
+  postgres_data:

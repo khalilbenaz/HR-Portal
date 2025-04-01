@@ -4,32 +4,53 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/components/ui/use-toast';
 import LeaveRequestForm from '@/components/leaves/LeaveRequestForm';
+import { useMutation } from '@apollo/client';
+import { CREATE_LEAVE_REQUEST, GET_LEAVE_REQUESTS } from '@/lib/graphql/leaves';
 
 const AddLeaveRequestPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { auth } = useAuth();
 
+  // Mutation pour créer une nouvelle demande de congé
+  const [createLeaveRequest] = useMutation(CREATE_LEAVE_REQUEST, {
+    refetchQueries: [{ query: GET_LEAVE_REQUESTS }],
+    onError: (error) => {
+      console.error('Error creating leave request:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de créer la demande de congé. Veuillez réessayer.",
+      });
+      setLoading(false);
+    }
+  });
+
   const handleSubmit = async (leaveData: any) => {
     setLoading(true);
     
-    // Simulate API call to create leave request
-    setTimeout(() => {
-      // In a real app, we would save this data to the backend
-      console.log('Creating leave request:', leaveData);
-      
-      toast({
-        title: "Leave Request Submitted",
-        description: `Your leave request has been submitted for approval by your manager and HR team.`,
-      });
-      
-      // In a real app, this is where we'd create notifications for manager and HR
-      console.log('Sending notification to manager');
-      console.log('Sending notification to HR department');
-      
+    // Appel à la mutation GraphQL pour créer une demande de congé
+    createLeaveRequest({
+      variables: {
+        input: {
+          employeeId: auth.user?.id,
+          startDate: leaveData.startDate,
+          endDate: leaveData.endDate,
+          type: leaveData.type,
+          reason: leaveData.reason
+        }
+      }
+    }).then(({ data }) => {
+      if (data?.createLeaveRequest) {
+        toast({
+          title: "Demande de congé soumise",
+          description: `Votre demande de congé a été soumise pour approbation par votre responsable et l'équipe RH.`,
+        });
+        navigate('/leaves');
+      }
+    }).finally(() => {
       setLoading(false);
-      navigate('/leaves');
-    }, 1000);
+    });
   };
   
   return (
