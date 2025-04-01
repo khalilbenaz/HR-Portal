@@ -15,6 +15,9 @@ import DashboardPage from "./pages/DashboardPage";
 import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeDetailPage from "./pages/EmployeeDetailPage";
 import LeaveRequestsPage from "./pages/LeaveRequestsPage";
+import PayrollPage from "./pages/PayrollPage";
+import PerformancePage from "./pages/PerformancePage";
+import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -68,6 +71,30 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <LeaveRequestsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/payroll" 
+          element={
+            <ProtectedRoute>
+              <PayrollPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/performance" 
+          element={
+            <ProtectedRoute>
+              <PerformancePage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/settings" 
+          element={
+            <ProtectedRoute>
+              <SettingsPage />
             </ProtectedRoute>
           } 
         />

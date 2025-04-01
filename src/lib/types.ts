@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   username: string;
@@ -6,6 +5,21 @@ export interface User {
   role: 'ADMIN' | 'HR' | 'MANAGER' | 'EMPLOYEE';
   firstName: string;
   lastName: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface AuthContextType {
+  auth: AuthState;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  clearErrors: () => void;
 }
 
 export interface Department {
@@ -36,38 +50,11 @@ export interface LeaveRequest {
   employee: Employee;
   startDate: string;
   endDate: string;
-  type: 'ANNUAL' | 'SICK' | 'MATERNITY' | 'PATERNITY' | 'OTHER';
+  type: 'SICK' | 'ANNUAL' | 'OTHER';
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   reason: string;
-  notes?: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface PaySlip {
-  id: string;
-  employeeId: string;
-  employee: Employee;
-  period: string;
-  baseSalary: number;
-  bonus: number;
-  deductions: number;
-  netSalary: number;
-  status: 'DRAFT' | 'FINALIZED' | 'PAID';
-  createdAt: string;
-}
-
-export interface Performance {
-  id: string;
-  employeeId: string;
-  employee: Employee;
-  reviewerId: string;
-  reviewer: Employee;
-  period: string;
-  rating: number;
-  comments: string;
-  goals: string[];
-  createdAt: string;
 }
 
 export interface DepartmentStats {
@@ -75,35 +62,52 @@ export interface DepartmentStats {
   employeeCount: number;
 }
 
-export interface LeaveStats {
-  pending: number;
-  approved: number;
-  rejected: number;
-}
-
 export interface Activity {
   id: string;
-  type: 'EMPLOYEE_ADDED' | 'EMPLOYEE_UPDATED' | 'LEAVE_REQUESTED' | 'LEAVE_APPROVED' | 'LEAVE_REJECTED' | 'PAYSLIP_GENERATED';
+  type: 'EMPLOYEE_ADDED' | 'EMPLOYEE_UPDATED' | 'LEAVE_REQUESTED' | 'LEAVE_APPROVED' | 'PAYSLIP_GENERATED';
   message: string;
   date: string;
   user: {
     id: string;
     name: string;
-    avatar?: string;
   };
 }
 
-export interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  loading: boolean;
-  error: string | null;
+// Payroll types
+export interface Payslip {
+  id: string;
+  employeeId: string;
+  employeeName?: string;
+  period: string;
+  issueDate: string;
+  grossAmount: number;
+  netAmount: number;
+  currency: string;
+  status: 'DRAFT' | 'ISSUED' | 'PAID';
 }
 
-export interface AuthContextType {
-  auth: AuthState;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  clearErrors: () => void;
+// Performance types
+export interface Review {
+  id: string;
+  employeeId: string;
+  reviewerId: string;
+  reviewerName: string;
+  period: string;
+  submissionDate: string;
+  score: number;
+  strengths: string;
+  improvements: string;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+}
+
+export interface Goal {
+  id: string;
+  employeeId: string;
+  title: string;
+  description: string;
+  startDate: string;
+  targetDate: string;
+  completedDate: string;
+  progress: number;
+  status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
 }
