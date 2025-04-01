@@ -1,8 +1,10 @@
 
+import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Star } from "lucide-react";
 import { Review } from "@/lib/types";
+import ReviewDetailsModal from "./ReviewDetailsModal";
 
 interface PerformanceReviewsProps {
   reviews: Review[];
@@ -10,6 +12,19 @@ interface PerformanceReviewsProps {
 }
 
 const PerformanceReviews = ({ reviews, loading }: PerformanceReviewsProps) => {
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openReviewDetails = (review: Review) => {
+    setSelectedReview(review);
+    setIsModalOpen(true);
+  };
+
+  const closeReviewDetails = () => {
+    setIsModalOpen(false);
+    setSelectedReview(null);
+  };
+
   if (loading) {
     return (
       <div className="h-[300px] flex items-center justify-center">
@@ -96,6 +111,7 @@ const PerformanceReviews = ({ reviews, loading }: PerformanceReviewsProps) => {
                     variant="ghost" 
                     size="sm" 
                     className="flex items-center gap-2"
+                    onClick={() => openReviewDetails(review)}
                   >
                     <span>View Details</span>
                     <ExternalLink className="h-4 w-4" />
@@ -106,6 +122,12 @@ const PerformanceReviews = ({ reviews, loading }: PerformanceReviewsProps) => {
           ))}
         </TableBody>
       </Table>
+      
+      <ReviewDetailsModal 
+        review={selectedReview} 
+        isOpen={isModalOpen} 
+        onClose={closeReviewDetails} 
+      />
     </div>
   );
 };
