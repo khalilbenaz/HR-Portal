@@ -1,22 +1,24 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Employee, Department } from '@/lib/types';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface EmployeeFormProps {
   employee?: Employee;
   initialData?: Employee;
   departments: Department[];
+  managers?: Employee[];
   onSubmit: (formData: Partial<Employee>) => void;
   isLoading: boolean;
   submitLabel?: string;
 }
 
-const EmployeeForm = ({ employee, initialData, departments, onSubmit, isLoading, submitLabel }: EmployeeFormProps) => {
+const EmployeeForm = ({ employee, initialData, departments, managers = [], onSubmit, isLoading, submitLabel }: EmployeeFormProps) => {
   const [formData, setFormData] = useState<Partial<Employee>>(
     employee || initialData || {
       firstName: '',
@@ -25,10 +27,13 @@ const EmployeeForm = ({ employee, initialData, departments, onSubmit, isLoading,
       phone: '',
       position: '',
       department: undefined,
+      manager: null,
       hireDate: new Date().toISOString().split('T')[0],
       status: 'ACTIVE'
     }
   );
+  
+  const [error, setError] = useState<string | null>(null);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,6 +47,12 @@ const EmployeeForm = ({ employee, initialData, departments, onSubmit, isLoading,
         ...prev, 
         department: selectedDepartment 
       }));
+    } else if (name === 'managerId') {
+      const selectedManager = managers.find(mgr => mgr.id === value);
+      setFormData(prev => ({
+        ...prev,
+        manager: selectedManager || null
+      }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -49,6 +60,23 @@ const EmployeeForm = ({ employee, initialData, departments, onSubmit, isLoading,
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation: ensure employee has a department and manager unless they are a top-level manager
+    const isHighLevelManager = formData.position?.toLowerCase().includes('director') || 
+                              formData.position?.toLowerCase().includes('ceo') ||
+                              formData.position?.toLowerCase().includes('chief');
+                              
+    if (!formData.department) {
+      setError('Department is required');
+      return;
+    }
+    
+    if (!formData.manager && !isHighLevelManager) {
+      setError('All employees must have a manager unless they are a top-level executive');
+      return;
+    }
+    
+    setError(null);
     onSubmit(formData);
   };
   
@@ -64,6 +92,12 @@ const EmployeeForm = ({ employee, initialData, departments, onSubmit, isLoading,
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
@@ -134,6 +168,26 @@ const EmployeeForm = ({ employee, initialData, departments, onSubmit, isLoading,
                   {departments.map((dept) => (
                     <SelectItem key={dept.id} value={dept.id}>
                       {dept.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="managerId">Manager</Label>
+              <Select 
+                value={formData.manager?.id} 
+                onValueChange={(value) => handleSelectChange('managerId', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a manager" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None (Top-level manager)</SelectItem>
+                  {managers.map((mgr) => (
+                    <SelectItem key={mgr.id} value={mgr.id}>
+                      {mgr.firstName} {mgr.lastName} - {mgr.position}
                     </SelectItem>
                   ))}
                 </SelectContent>

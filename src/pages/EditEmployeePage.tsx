@@ -20,9 +20,42 @@ const EditEmployeePage = () => {
     { id: 'd4', name: 'HR', managerId: 'm4', employeeCount: 12 }
   ];
   
+  // Mock managers data
+  const mockManagers: Employee[] = [
+    {
+      id: 'm1',
+      userId: 'u0',
+      firstName: 'Jane',
+      lastName: 'Wilson',
+      email: 'jane.wilson@example.com',
+      phone: '(555) 987-6543',
+      position: 'Department Director',
+      department: { id: 'd1', name: 'Engineering', managerId: 'm1', employeeCount: 42 },
+      manager: null,
+      hireDate: '2018-05-10',
+      status: 'ACTIVE'
+    },
+    {
+      id: 'm2',
+      userId: 'u00',
+      firstName: 'Robert',
+      lastName: 'Smith',
+      email: 'robert.smith@example.com',
+      phone: '(555) 555-1234',
+      position: 'Marketing Director',
+      department: { id: 'd2', name: 'Marketing', managerId: 'm2', employeeCount: 18 },
+      manager: null,
+      hireDate: '2017-07-12',
+      status: 'ACTIVE'
+    }
+  ];
+  
   useEffect(() => {
     // Simulate API call to fetch employee data
     setTimeout(() => {
+      // Mock manager
+      const mockManager = mockManagers.find(m => m.id === 'm1');
+      
       // Mock employee data - in a real app this would come from an API
       const mockEmployee: Employee = {
         id: id || '1',
@@ -38,7 +71,7 @@ const EditEmployeePage = () => {
           managerId: 'm1',
           employeeCount: 42
         },
-        manager: null,
+        manager: mockManager,
         hireDate: '2022-01-15',
         status: 'ACTIVE'
       };
@@ -92,6 +125,7 @@ const EditEmployeePage = () => {
       <EmployeeForm 
         initialData={employee}
         departments={mockDepartments}
+        managers={mockManagers}
         onSubmit={handleSubmit}
         isLoading={saving}
         submitLabel="Update Employee"

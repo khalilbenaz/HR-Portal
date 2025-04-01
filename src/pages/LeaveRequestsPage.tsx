@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import LeaveRequestList from '@/components/leaves/LeaveRequestList';
-import { LeaveRequest } from '@/lib/types';
+import { LeaveRequest, LeaveNotification } from '@/lib/types';
 import { toast } from '@/components/ui/use-toast';
 
 const LeaveRequestsPage = () => {
@@ -26,7 +25,19 @@ const LeaveRequestsPage = () => {
             phone: '(555) 123-4567',
             position: 'Senior Developer',
             department: { id: 'd1', name: 'Engineering', managerId: 'm1', employeeCount: 42 },
-            manager: null,
+            manager: {
+              id: 'm1',
+              userId: 'u0',
+              firstName: 'Jane',
+              lastName: 'Wilson',
+              email: 'jane.wilson@example.com',
+              phone: '(555) 987-6543',
+              position: 'Department Director',
+              department: { id: 'd1', name: 'Engineering', managerId: 'm1', employeeCount: 42 },
+              manager: null,
+              hireDate: '2018-05-10',
+              status: 'ACTIVE'
+            },
             hireDate: '2021-03-15',
             status: 'ACTIVE'
           },
@@ -36,7 +47,25 @@ const LeaveRequestsPage = () => {
           status: 'APPROVED',
           reason: 'Family vacation',
           createdAt: '2023-06-01T10:30:00Z',
-          updatedAt: '2023-06-02T14:20:00Z'
+          updatedAt: '2023-06-02T14:20:00Z',
+          notifications: [
+            {
+              id: 'n1',
+              leaveRequestId: '1',
+              recipientId: 'm1',
+              recipientRole: 'MANAGER',
+              read: true,
+              createdAt: '2023-06-01T10:30:00Z'
+            },
+            {
+              id: 'n2',
+              leaveRequestId: '1',
+              recipientId: 'hr1',
+              recipientRole: 'HR',
+              read: true,
+              createdAt: '2023-06-01T10:30:00Z'
+            }
+          ]
         },
         {
           id: '2',
@@ -50,7 +79,19 @@ const LeaveRequestsPage = () => {
             phone: '(555) 987-6543',
             position: 'Marketing Manager',
             department: { id: 'd2', name: 'Marketing', managerId: 'm2', employeeCount: 18 },
-            manager: null,
+            manager: {
+              id: 'm2',
+              userId: 'u00',
+              firstName: 'Robert',
+              lastName: 'Smith',
+              email: 'robert.smith@example.com',
+              phone: '(555) 555-1234',
+              position: 'Marketing Director',
+              department: { id: 'd2', name: 'Marketing', managerId: 'm2', employeeCount: 18 },
+              manager: null,
+              hireDate: '2017-07-12',
+              status: 'ACTIVE'
+            },
             hireDate: '2020-07-22',
             status: 'ACTIVE'
           },
@@ -60,7 +101,25 @@ const LeaveRequestsPage = () => {
           status: 'PENDING',
           reason: 'Medical appointment',
           createdAt: '2023-06-28T09:15:00Z',
-          updatedAt: '2023-06-28T09:15:00Z'
+          updatedAt: '2023-06-28T09:15:00Z',
+          notifications: [
+            {
+              id: 'n3',
+              leaveRequestId: '2',
+              recipientId: 'm2',
+              recipientRole: 'MANAGER',
+              read: false,
+              createdAt: '2023-06-28T09:15:00Z'
+            },
+            {
+              id: 'n4',
+              leaveRequestId: '2',
+              recipientId: 'hr1',
+              recipientRole: 'HR',
+              read: false,
+              createdAt: '2023-06-28T09:15:00Z'
+            }
+          ]
         },
         {
           id: '3',
@@ -149,10 +208,22 @@ const LeaveRequestsPage = () => {
       )
     );
     
-    toast({
-      title: "Leave request approved",
-      description: "The employee has been notified",
-    });
+    // Find the employee who requested leave
+    const leaveRequest = leaveRequests.find(req => req.id === id);
+    if (leaveRequest) {
+      // Notify the employee about approval
+      toast({
+        title: "Leave request approved",
+        description: `${leaveRequest.employee.firstName} ${leaveRequest.employee.lastName}'s leave request has been approved.`,
+      });
+      
+      // In a real app, we would send notifications to the employee, their manager, and HR
+      console.log(`Notification sent to employee ${leaveRequest.employee.firstName} ${leaveRequest.employee.lastName}`);
+      console.log(`Notification sent to HR team`);
+      if (leaveRequest.employee.manager) {
+        console.log(`Notification sent to manager ${leaveRequest.employee.manager.firstName} ${leaveRequest.employee.manager.lastName}`);
+      }
+    }
   };
   
   const handleReject = (id: string) => {
@@ -163,11 +234,23 @@ const LeaveRequestsPage = () => {
       )
     );
     
-    toast({
-      variant: "destructive",
-      title: "Leave request rejected",
-      description: "The employee has been notified",
-    });
+    // Find the employee who requested leave
+    const leaveRequest = leaveRequests.find(req => req.id === id);
+    if (leaveRequest) {
+      // Notify the employee about rejection
+      toast({
+        variant: "destructive",
+        title: "Leave request rejected",
+        description: `${leaveRequest.employee.firstName} ${leaveRequest.employee.lastName}'s leave request has been rejected.`,
+      });
+      
+      // In a real app, we would send notifications to the employee, their manager, and HR
+      console.log(`Rejection notification sent to employee ${leaveRequest.employee.firstName} ${leaveRequest.employee.lastName}`);
+      console.log(`Rejection notification sent to HR team`);
+      if (leaveRequest.employee.manager) {
+        console.log(`Rejection notification sent to manager ${leaveRequest.employee.manager.firstName} ${leaveRequest.employee.manager.lastName}`);
+      }
+    }
   };
   
   return (

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import EmployeeForm from '@/components/employees/EmployeeForm';
-import { Department } from '@/lib/types';
+import { Department, Employee } from '@/lib/types';
 
 const AddEmployeePage = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +15,36 @@ const AddEmployeePage = () => {
     { id: 'd2', name: 'Marketing', managerId: 'm2', employeeCount: 18 },
     { id: 'd3', name: 'Sales', managerId: 'm3', employeeCount: 27 },
     { id: 'd4', name: 'HR', managerId: 'm4', employeeCount: 12 }
+  ];
+
+  // Mock managers data
+  const mockManagers: Employee[] = [
+    {
+      id: 'm1',
+      userId: 'u0',
+      firstName: 'Jane',
+      lastName: 'Wilson',
+      email: 'jane.wilson@example.com',
+      phone: '(555) 987-6543',
+      position: 'Department Director',
+      department: { id: 'd1', name: 'Engineering', managerId: 'm1', employeeCount: 42 },
+      manager: null,
+      hireDate: '2018-05-10',
+      status: 'ACTIVE'
+    },
+    {
+      id: 'm2',
+      userId: 'u00',
+      firstName: 'Robert',
+      lastName: 'Smith',
+      email: 'robert.smith@example.com',
+      phone: '(555) 555-1234',
+      position: 'Marketing Director',
+      department: { id: 'd2', name: 'Marketing', managerId: 'm2', employeeCount: 18 },
+      manager: null,
+      hireDate: '2017-07-12',
+      status: 'ACTIVE'
+    }
   ];
 
   const handleSubmit = async (employeeData: any) => {
@@ -44,6 +74,7 @@ const AddEmployeePage = () => {
       
       <EmployeeForm 
         departments={mockDepartments}
+        managers={mockManagers}
         onSubmit={handleSubmit}
         isLoading={loading}
         submitLabel="Add Employee"

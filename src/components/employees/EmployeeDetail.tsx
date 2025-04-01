@@ -47,7 +47,10 @@ const EmployeeDetail = ({ employee, loading }: EmployeeDetailProps) => {
           
           <div className="mt-4 flex items-center gap-6">
             <div className="flex items-center gap-2 text-sm">
-              <div className="h-2 w-2 rounded-full bg-green-500"></div>
+              <div className={`h-2 w-2 rounded-full ${
+                employee.status === 'ACTIVE' ? 'bg-green-500' : 
+                employee.status === 'ON_LEAVE' ? 'bg-yellow-500' : 'bg-red-500'
+              }`}></div>
               <span>{employee.status === 'ACTIVE' ? 'Active' : employee.status === 'ON_LEAVE' ? 'On Leave' : 'Terminated'}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
@@ -110,14 +113,22 @@ const EmployeeDetail = ({ employee, loading }: EmployeeDetailProps) => {
                 <p className="font-medium">{employee.position}</p>
               </div>
             </div>
-            {employee.manager && (
+            {employee.manager ? (
               <div className="flex items-center gap-3">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Manager</p>
-                  <p className="font-medium">
-                    {employee.manager.firstName} {employee.manager.lastName}
-                  </p>
+                  <Link to={`/employees/${employee.manager.id}`} className="font-medium text-primary hover:underline">
+                    {employee.manager.firstName} {employee.manager.lastName} - {employee.manager.position}
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Manager</p>
+                  <p className="font-medium text-muted-foreground italic">Top-level management</p>
                 </div>
               </div>
             )}

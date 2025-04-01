@@ -1,3 +1,4 @@
+
 export interface User {
   id: string;
   username: string;
@@ -55,6 +56,16 @@ export interface LeaveRequest {
   reason: string;
   createdAt: string;
   updatedAt: string;
+  notifications?: LeaveNotification[];
+}
+
+export interface LeaveNotification {
+  id: string;
+  leaveRequestId: string;
+  recipientId: string;
+  recipientRole: 'MANAGER' | 'HR';
+  read: boolean;
+  createdAt: string;
 }
 
 export interface DepartmentStats {

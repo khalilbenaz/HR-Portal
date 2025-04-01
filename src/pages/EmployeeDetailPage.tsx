@@ -12,6 +12,22 @@ const EmployeeDetailPage = () => {
   useEffect(() => {
     // Simulate API call
     setTimeout(() => {
+      // In a real app, this would be fetched from the backend
+      // Mock data with manager relationship
+      const mockManager: Employee = {
+        id: 'm1',
+        userId: 'u0',
+        firstName: 'Jane',
+        lastName: 'Wilson',
+        email: 'jane.wilson@example.com',
+        phone: '(555) 987-6543',
+        position: 'Department Director',
+        department: { id: 'd1', name: 'Engineering', managerId: 'm1', employeeCount: 42 },
+        manager: null, // Top-level manager
+        hireDate: '2018-05-10',
+        status: 'ACTIVE'
+      };
+      
       // This would be a GraphQL query in a real app
       const mockEmployee: Employee = {
         id: id || '1',
@@ -22,7 +38,7 @@ const EmployeeDetailPage = () => {
         phone: '(555) 123-4567',
         position: 'Senior Developer',
         department: { id: 'd1', name: 'Engineering', managerId: 'm1', employeeCount: 42 },
-        manager: null,
+        manager: mockManager, // Every employee has a manager
         hireDate: '2021-03-15',
         status: 'ACTIVE'
       };
