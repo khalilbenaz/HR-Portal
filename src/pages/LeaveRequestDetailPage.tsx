@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
@@ -8,95 +8,92 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { Calendar, Clock, FileText, User } from 'lucide-react';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_LEAVE_REQUEST, APPROVE_LEAVE_REQUEST, REJECT_LEAVE_REQUEST } from '@/lib/graphql/leaves';
 
 const LeaveRequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { auth } = useAuth();
+  const [leaveRequest, setLeaveRequest] = useState<LeaveRequest | null>(null);
+  const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   
   const isManager = auth.user?.role === 'MANAGER' || auth.user?.role === 'HR' || auth.user?.role === 'ADMIN';
   
-  // Récupération des détails de la demande de congé depuis l'API GraphQL
-  const { data, loading, error } = useQuery(GET_LEAVE_REQUEST, {
-    variables: { id },
-    fetchPolicy: 'cache-and-network',
-    onError: (error) => {
-      console.error('Error fetching leave request details:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de charger les détails de la demande de congé. Veuillez réessayer.",
-      });
-    }
-  });
-  
-  // Extraction des données de la réponse GraphQL
-  const leaveRequest = data?.leaveRequest || null;
-  
-  // Mutation pour approuver une demande de congé
-  const [approveLeaveRequest] = useMutation(APPROVE_LEAVE_REQUEST, {
-    refetchQueries: [{ query: GET_LEAVE_REQUEST, variables: { id } }],
-    onError: (error) => {
-      console.error('Error approving leave request:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible d'approuver la demande de congé. Veuillez réessayer.",
-      });
-    }
-  });
+  useEffect(() => {
+    // Simulate API call to fetch leave request data
+    setTimeout(() => {
+      // Mock leave request data - in a real app this would come from an API
+      const mockLeaveRequest: LeaveRequest = {
+        id: id || '1',
+        employeeId: '1',
+        employee: {
+          id: '1',
+          userId: 'u1',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@example.com',
+          phone: '(555) 123-4567',
+          position: 'Software Engineer',
+          department: {
+            id: 'd1',
+            name: 'Engineering',
+            managerId: 'm1',
+            employeeCount: 42
+          },
+          manager: null,
+          hireDate: '2022-01-15',
+          status: 'ACTIVE'
+        },
+        startDate: '2023-07-10',
+        endDate: '2023-07-15',
+        type: 'ANNUAL',
+        status: 'PENDING',
+        reason: 'Family vacation',
+        createdAt: '2023-06-20T10:30:00Z',
+        updatedAt: '2023-06-20T10:30:00Z'
+      };
+      
+      setLeaveRequest(mockLeaveRequest);
+      setLoading(false);
+    }, 1000);
+  }, [id]);
   
   const handleApprove = () => {
     setProcessing(true);
     
-    // Exécution de la mutation GraphQL pour approuver la demande
-    approveLeaveRequest({ 
-      variables: { id } 
-    }).then(({ data }) => {
-      if (data?.approveLeaveRequest) {
-        toast({
-          title: "Demande de congé approuvée",
-          description: "La demande de congé a été approuvée avec succès.",
-        });
-      }
-    }).finally(() => {
-      setProcessing(false);
-    });
-  };
-  
-  // Mutation pour rejeter une demande de congé
-  const [rejectLeaveRequest] = useMutation(REJECT_LEAVE_REQUEST, {
-    refetchQueries: [{ query: GET_LEAVE_REQUEST, variables: { id } }],
-    onError: (error) => {
-      console.error('Error rejecting leave request:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de rejeter la demande de congé. Veuillez réessayer.",
+    // Simulate API call to approve leave request
+    setTimeout(() => {
+      setLeaveRequest((prev) => {
+        if (!prev) return null;
+        return { ...prev, status: 'APPROVED', updatedAt: new Date().toISOString() };
       });
-    }
-  });
+      
+      toast({
+        title: "Leave Request Approved",
+        description: "The leave request has been approved successfully.",
+      });
+      
+      setProcessing(false);
+    }, 1000);
+  };
   
   const handleReject = () => {
     setProcessing(true);
     
-    // Exécution de la mutation GraphQL pour rejeter la demande
-    rejectLeaveRequest({ 
-      variables: { id } 
-    }).then(({ data }) => {
-      if (data?.rejectLeaveRequest) {
-        toast({
-          variant: "destructive",
-          title: "Demande de congé rejetée",
-          description: "La demande de congé a été rejetée.",
-        });
-      }
-    }).finally(() => {
+    // Simulate API call to reject leave request
+    setTimeout(() => {
+      setLeaveRequest((prev) => {
+        if (!prev) return null;
+        return { ...prev, status: 'REJECTED', updatedAt: new Date().toISOString() };
+      });
+      
+      toast({
+        title: "Leave Request Rejected",
+        description: "The leave request has been rejected.",
+      });
+      
       setProcessing(false);
-    });
+    }, 1000);
   };
   
   const calculateDuration = (start: string, end: string) => {

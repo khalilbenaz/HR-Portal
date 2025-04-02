@@ -5,8 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "@/lib/graphql";
 
 // Layouts
 import MainLayout from "./components/layout/MainLayout";
@@ -172,19 +170,17 @@ const AppRoutes = () => {
 };
 
 const App = () => (
-  <ApolloProvider client={client}>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <AppRoutes />
-            <Toaster />
-            <Sonner />
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ApolloProvider>
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppRoutes />
+          <Toaster />
+          <Sonner />
+        </AuthProvider>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 export default App;
