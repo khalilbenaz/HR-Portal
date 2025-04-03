@@ -60,6 +60,10 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## How can I build this project?
+
+Redémarré les conteneurs avec`docker-compose down` suivi de`docker-compose up --build -d`
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/8577d1b8-6cca-4208-82fa-8705a32abd81) and click on Share -> Publish.

@@ -45,9 +45,9 @@ const Sidebar = ({ open }: SidebarProps) => {
       <div className="h-full flex flex-col">
         <div className="h-16 flex items-center justify-center px-4 border-b border-sidebar-border">
           {open ? (
-            <h1 className="text-lg font-bold text-sidebar-primary">Stellar HR</h1>
+            <h1 className="text-lg font-bold text-sidebar-primary">B3G PORTAL</h1>
           ) : (
-            <h1 className="text-lg font-bold text-sidebar-primary">SHR</h1>
+            <h1 className="text-lg font-bold text-sidebar-primary">B3G PRTL</h1>
           )}
         </div>
         
