@@ -1,77 +1,123 @@
-# Welcome to your Lovable project
+<div align="center">
 
-## Project info
+# 👥 HR Portal
 
-**URL**: https://lovable.dev/projects/8577d1b8-6cca-4208-82fa-8705a32abd81
+**Portail de gestion des Ressources Humaines**
 
-## How can I edit this code?
+[![CI](https://github.com/khalilbenaz/HR-Portal/actions/workflows/ci.yml/badge.svg)](https://github.com/khalilbenaz/HR-Portal/actions/workflows/ci.yml)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-336791?logo=postgresql&logoColor=white)](https://postgresql.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-There are several ways of editing your application.
+Application web moderne pour la gestion des employés, congés, paie, performance et dashboard RH.
 
-**Use Lovable**
+[Quick Start](#-quick-start) · [Pages](#-pages) · [Architecture](#-architecture)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/8577d1b8-6cca-4208-82fa-8705a32abd81) and start prompting.
+</div>
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## Fonctionnalités
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 👤 Gestion des employés
+Création, édition et consultation de fiches employés avec informations détaillées, département, poste et historique.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 📅 Gestion des congés
+Demandes de congés avec workflow d'approbation, calendrier de disponibilité, soldes de congés et historique.
 
-Follow these steps:
+### 💰 Paie
+Fiches de paie détaillées, historique des bulletins, calcul automatique et export.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 📊 Performance
+Objectifs individuels, évaluations périodiques, revues de performance et suivi des goals.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 📈 Dashboard
+Vue d'ensemble avec statistiques RH, graphiques employés, demandes de congés récentes et activité.
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 🔐 Authentification
+Login sécurisé avec JWT, gestion des sessions et contrôle d'accès.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+---
+
+## 📱 Pages
+
+| Page | Route | Description |
+|------|-------|-------------|
+| Dashboard | `/` | Statistiques, graphiques, activité récente |
+| Login | `/login` | Authentification JWT |
+| Employés | `/employees` | Liste avec filtres et recherche |
+| Ajouter employé | `/employees/add` | Formulaire de création |
+| Détail employé | `/employees/:id` | Fiche complète |
+| Modifier employé | `/employees/:id/edit` | Édition |
+| Congés | `/leave-requests` | Liste des demandes |
+| Demande congé | `/leave-requests/add` | Nouvelle demande |
+| Détail congé | `/leave-requests/:id` | Détail + approbation |
+| Paie | `/payroll` | Fiches de paie |
+| Bulletin | `/payroll/:id` | Détail bulletin |
+| Performance | `/performance` | Objectifs + évaluations |
+| Ajouter objectif | `/performance/goals/add` | Nouveau goal |
+| Paramètres | `/settings` | Configuration |
+
+---
+
+## 🏗️ Architecture
+
+```
+HR-Portal/
+├── src/
+│   ├── pages/                    # 16 pages
+│   ├── components/
+│   │   ├── auth/                 # LoginForm
+│   │   ├── dashboard/            # StatCard, Charts, Activity
+│   │   ├── employees/            # List, Detail, Form
+│   │   ├── leaves/               # RequestForm, RequestList
+│   │   ├── payroll/              # PayslipList, PayslipDetail
+│   │   ├── performance/          # Goals, Reviews, Modal
+│   │   ├── layout/               # Header, Sidebar, MainLayout
+│   │   └── ui/                   # 48 composants shadcn/ui
+│   ├── hooks/                    # useAuth, useToast, useMobile
+│   └── lib/                      # Utils, types
+│
+├── backend/
+│   └── index.js                  # Express + Sequelize + JWT + bcrypt
+│
+└── docker-compose.yml            # Frontend + Backend + PostgreSQL
 ```
 
-**Edit a file directly in GitHub**
+## Stack
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Couche | Technologies |
+|--------|-------------|
+| **Frontend** | React 19 · TypeScript · Vite · Tailwind CSS · shadcn/ui |
+| **Backend** | Express.js · Sequelize ORM · JWT · bcrypt |
+| **Database** | PostgreSQL 14 |
+| **UI** | 48 composants shadcn/ui (Button, Card, Table, Dialog, Chart...) |
+| **Container** | Docker Compose (frontend + backend + PostgreSQL) |
+| **CI/CD** | GitHub Actions |
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🚀 Quick Start
 
-## What technologies are used for this project?
+### Docker (recommandé)
+```bash
+docker-compose up --build
+```
+→ Frontend : `http://localhost:3000`
+→ Backend : `http://localhost:5000`
 
-This project is built with:
+### Manuel
+```bash
+# Frontend
+npm install && npm run dev
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Backend
+cd backend && npm install && node index.js
+```
 
-## How can I build this project?
+---
 
-Redémarré les conteneurs avec`docker-compose down` suivi de`docker-compose up --build -d`
+## Licence
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/8577d1b8-6cca-4208-82fa-8705a32abd81) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+MIT — [Khalil Benazzouz](https://github.com/khalilbenaz)
